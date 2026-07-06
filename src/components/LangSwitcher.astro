@@ -1,0 +1,59 @@
+---
+import { languages, localizedPath, getT, type Lang } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = getT(lang);
+const entries = (Object.keys(languages) as Lang[]).map((code) => ({ code, ...languages[code] }));
+const current = languages[lang];
+---
+<details class="lang-switcher relative">
+  <summary
+    class="inline-flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-rule bg-surface px-3 py-2 text-sm font-medium text-dim transition hover:text-ink"
+    aria-label={t.langLabel}
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+    <span>{current.native}</span>
+    <svg class="chev" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+  </summary>
+
+  <div class="menu absolute right-0 z-50 mt-2 min-w-48 overflow-hidden rounded-2xl border border-rule bg-surface p-1.5 shadow-lg">
+    {entries.map((e) => (
+      e.live ? (
+        <a
+          href={localizedPath(e.code)}
+          hreflang={e.code}
+          class:list={["flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-sm no-underline transition", e.code === lang ? "bg-accent/10 text-accent" : "text-dim hover:bg-accent/5 hover:text-ink"]}
+          aria-current={e.code === lang ? 'true' : undefined}
+        >
+          <span>{e.native}</span>
+          <span class="text-faint text-xs">{e.english}</span>
+        </a>
+      ) : (
+        <span class="flex cursor-not-allowed items-center justify-between gap-3 rounded-xl px-3 py-2 text-sm text-faint/70" aria-disabled="true">
+          <span>{e.native}</span>
+          <span class="rounded-full border border-rule px-1.5 py-0.5 text-[10px] uppercase tracking-wide">{t.soon}</span>
+        </span>
+      )
+    ))}
+  </div>
+</details>
+
+<style>
+  .lang-switcher > summary::-webkit-details-marker { display: none; }
+  .lang-switcher[open] .chev { transform: rotate(180deg); }
+  .chev { transition: transform 0.2s ease; }
+  .menu { box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24); }
+</style>
+
+<script>
+  // Close the dropdown on outside click or Escape.
+  document.querySelectorAll('details.lang-switcher').forEach((d) => {
+    document.addEventListener('click', (e) => {
+      if (d instanceof HTMLDetailsElement && d.open && !d.contains(e.target as Node)) d.open = false;
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && d instanceof HTMLDetailsElement) d.open = false;
+    });
+  });
+</script>

@@ -1,0 +1,13 @@
+---
+import Landing from '../../components/Landing.astro';
+import { localizedLangs, type Lang } from '../../i18n/ui';
+
+// One static page per live, non-default locale (e.g. /hi/). Scaffolded locales
+// are excluded until flipped live in i18n/ui.ts.
+export function getStaticPaths() {
+  return localizedLangs.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+---
+<Landing lang={lang} />

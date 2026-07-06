@@ -1,0 +1,79 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+
+const sections = [
+  {
+    title: 'Who Operates Vyom AR',
+    paragraphs: [
+      'Vyom AR is operated by CoderMana Technologies Private Limited. This Privacy Policy explains how the Vyom AR landing page, mobile app, and public API handle information.',
+      'Vyom AR is currently built without user accounts, identity profiles, advertising identifiers, or payment flows.',
+    ],
+  },
+  {
+    title: 'Information The App Uses',
+    paragraphs: [
+      'Vyom AR computes Panchang, muhurta, and sky visualizations from time and place. To do that, the app may use coordinates you choose from presets or, with your device permission, your current device location.',
+      'Location is used to compute sunrise, sunset, Panchang values, muhurta windows, and sky positions. If you deny location permission, the app continues to work with preset or manually selected places.',
+      'The app stores preferences such as selected place, time settings, ayanamsa, theme, and telemetry consent on your device so the experience can persist between launches.',
+    ],
+  },
+  {
+    title: 'Public API Requests',
+    paragraphs: [
+      'When you call the public Vyom AR API, request parameters such as latitude, longitude, date, time, and selected calculation options may be processed by the service to return computed results.',
+      'Server infrastructure may keep standard operational logs such as timestamps, route names, status codes, IP addresses, and error information for security, debugging, abuse prevention, and reliability.',
+    ],
+  },
+  {
+    title: 'Crash Reports And Telemetry',
+    paragraphs: [
+      'Anonymous crash reporting is opt-in. If enabled, reports are keyed to a random install id, not to your name, email, account, or precise location.',
+      'Vyom AR does not send telemetry when consent is off or when no telemetry endpoint is configured. Request breadcrumbs, when present in crash reports, use route names rather than full URLs or query strings.',
+    ],
+  },
+  {
+    title: 'What We Do Not Do',
+    paragraphs: [
+      'Vyom AR does not sell personal data. The app does not require an account to use the current Panchang, sky, and muhurta features.',
+    ],
+    items: [
+      'We do not use your precise location for advertising.',
+      'We do not collect payment details in the current app.',
+      'We do not intentionally collect names, email addresses, or contacts through the current app experience.',
+    ],
+  },
+  {
+    title: 'Third-Party Services',
+    paragraphs: [
+      'The landing page loads web fonts from Google Fonts. The mobile app may use platform services for location permission and optional crash reporting when enabled.',
+      'Third-party infrastructure providers may process limited technical information to deliver the site, API, app distribution, diagnostics, and security.',
+    ],
+  },
+  {
+    title: 'Children',
+    paragraphs: [
+      'Vyom AR is an educational astronomy and Panchang visualization product, but it is not directed at children under 13. If you believe a child has provided personal information, contact the operator so it can be reviewed.',
+    ],
+  },
+  {
+    title: 'Changes To This Policy',
+    paragraphs: [
+      'This policy may change as Vyom AR adds features such as accounts, paid services, or additional diagnostics. Material changes will be reflected by updating this page.',
+    ],
+  },
+  {
+    title: 'Contact',
+    paragraphs: [
+      'For privacy questions, contact CoderMana Technologies Private Limited through the support or business contact channel published for the company.',
+    ],
+  },
+];
+---
+
+<LegalPage
+  title="Privacy Policy"
+  description="How Vyom AR handles location, preferences, API requests, and optional crash reporting."
+  updated="July 6, 2026"
+  intro="Vyom AR is designed as an offline-first Panchang and sky visualization product. The current product avoids accounts and keeps data collection limited to what is needed for computation, reliability, and optional diagnostics."
+  sections={sections}
+/>

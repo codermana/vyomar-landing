@@ -1,0 +1,100 @@
+---
+import '../styles/global.css';
+import { languages, DEFAULT_LANG, type Lang } from '../i18n/ui';
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: Lang;
+  dir?: 'ltr' | 'rtl';
+}
+const { title, description, lang = DEFAULT_LANG, dir = 'ltr' } = Astro.props;
+
+// Always load the Latin display/body pair plus Devanagari (used for the
+// पञ्चाङ्ग accent on every locale). Add the active locale's Noto serif when it
+// needs a different script.
+const locFont = languages[lang]?.font;
+const families = [
+  'Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700',
+  'Inter:wght@400;500;600;700',
+  'Noto Serif Devanagari:wght@400;500;600',
+];
+if (locFont && locFont !== 'Noto Serif Devanagari') families.push(`${locFont}:wght@400;500;600`);
+const fontsHref =
+  'https://fonts.googleapis.com/css2?family=' +
+  families.map((f) => f.replace(/ /g, '+')).join('&family=') +
+  '&display=swap';
+
+// Non-Latin locales render headings/body in their own serif; English keeps
+// Fraunces/Inter. Inline so it overrides the @theme tokens on :root.
+const fontStyle = locFont
+  ? `--font-serif: "${locFont}", "Fraunces", Georgia, serif; --font-sans: "${locFont}", "Inter", sans-serif;`
+  : undefined;
+---
+<!doctype html>
+<html lang={lang} dir={dir} style={fontStyle}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0a0e1f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f3e7cb" media="(prefers-color-scheme: light)" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href={fontsHref} rel="stylesheet" />
+    <script is:inline>
+      // FOUC-safe theme boot + toggle (light/dark on <html>). Mirrors Novel
+      // Signer; additionally dispatches `themechange` so the hero canvas redraws.
+      const storageKey = 'theme';
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+      const getTheme = () => {
+        const stored = localStorage.getItem(storageKey);
+        if (stored === 'dark' || stored === 'light') return stored;
+        return mediaQuery.matches ? 'dark' : 'light';
+      };
+
+      const applyTheme = (theme) => {
+        const isDark = theme === 'dark';
+        document.documentElement.classList.toggle('dark', isDark);
+        document.documentElement.classList.toggle('light', !isDark);
+        const toggle = document.getElementById('theme-toggle');
+        if (toggle) {
+          toggle.setAttribute('aria-pressed', String(isDark));
+          toggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+        }
+        window.dispatchEvent(new Event('themechange'));
+      };
+
+      const setTheme = (theme) => {
+        localStorage.setItem(storageKey, theme);
+        applyTheme(theme);
+      };
+
+      applyTheme(getTheme());
+
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        if (!target.closest('#theme-toggle')) return;
+        setTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark');
+      });
+
+      mediaQuery.addEventListener('change', (event) => {
+        if (localStorage.getItem(storageKey)) return;
+        applyTheme(event.matches ? 'dark' : 'light');
+      });
+
+      document.addEventListener('astro:after-swap', () => applyTheme(getTheme()));
+    </script>
+  </head>
+  <body class="bg-canvas relative min-h-screen overflow-x-hidden antialiased">
+    <slot />
+    <script is:inline src="/script.js"></script>
+  </body>
+</html>

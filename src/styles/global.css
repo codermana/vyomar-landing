@@ -1,0 +1,306 @@
+@import "tailwindcss";
+
+/* Dark mode is driven by a `.dark` class on <html> (set by the theme toggle),
+   not by prefers-color-scheme, so a manual choice can override the OS. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ----------------------------------------------------------------------------
+   Vyom AR design system
+   A dual identity switched on prefers-color-scheme: a parchment almanac in
+   light, a celestial night in dark. Fraunces display serif + Inter body, with
+   Noto Serif Devanagari for the Sanskrit/Hindi angas. Tokens mirror the app
+   (app/lib/theme.dart) so the site and the product read as one thing.
+---------------------------------------------------------------------------- */
+
+/* Brand tokens live outside @theme so prefers-color-scheme can swap them at
+   runtime; @theme below maps Tailwind utilities onto these variables. The
+   hero canvas also reads --sun/--moon/--nak/--tit/--disk0/--disk1 by name. */
+:root {
+  /* Parchment almanac (light) */
+  --bg: #f3e7cb;
+  --surface: #ecddbc;
+  --text: #241a0e;
+  --text-dim: #5c4b2e;
+  --text-faint: #7a6634;
+  --accent: #9e2b25;
+  --accent-soft: #b07a18;
+  --rule: rgba(36, 26, 14, 0.16);
+  --hairline: rgba(36, 26, 14, 0.12);
+  --card-a: rgba(255, 250, 236, 0.55);
+  --card-b: rgba(255, 250, 236, 0.12);
+  --glow-a: rgba(158, 43, 37, 0.10);
+  --glow-b: rgba(176, 122, 24, 0.12);
+  --grid: rgba(36, 26, 14, 0.035);
+  --btn-ink: #fff8ea;
+  /* Celestial wheel */
+  --sun: #b07a18;
+  --moon: #2e3a6e;
+  --nak: 46, 58, 110;
+  --tit: 176, 122, 24;
+  --disk0: #f7eed4;
+  --disk1: #e7d6ad;
+}
+
+html.dark {
+    /* Celestial night (dark) */
+    --bg: #0a0e1f;
+    --surface: #192242;
+    --text: #f6f8ff;
+    --text-dim: #c3cbec;
+    --text-faint: #94a0ce;
+    --accent: #ff8a4d;
+    --accent-soft: #ffb088;
+    --rule: rgba(246, 248, 255, 0.14);
+    --hairline: rgba(246, 248, 255, 0.10);
+    --card-a: rgba(255, 255, 255, 0.035);
+    --card-b: rgba(255, 255, 255, 0.012);
+    --glow-a: rgba(255, 138, 77, 0.12);
+    --glow-b: rgba(124, 140, 255, 0.10);
+    --grid: rgba(255, 255, 255, 0.022);
+    --btn-ink: #1a1206;
+    --sun: #f4b740;
+    --moon: #d7def2;
+    --nak: 124, 140, 255;
+    --tit: 255, 138, 77;
+    --disk0: #131a38;
+    --disk1: #0a0e1f;
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-deva: "Noto Serif Devanagari", "Fraunces", Georgia, serif;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--text);
+  --color-dim: var(--text-dim);
+  --color-faint: var(--text-faint);
+  --color-accent: var(--accent);
+  --color-accentsoft: var(--accent-soft);
+  --color-rule: var(--rule);
+
+  --radius-card: 1.25rem;
+
+  --shadow-card: 0 18px 48px rgba(0, 0, 0, 0.18), inset 0 1px 0 var(--hairline);
+  --shadow-lift: 0 28px 70px rgba(0, 0, 0, 0.28);
+}
+
+/* ------------------------------- Base -------------------------------------- */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+h1, h2, h3, .font-serif {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+}
+
+/* Ambient page glows + faint grid, painted behind everything. */
+.bg-canvas::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(60rem 40rem at 12% -8%, var(--glow-a), transparent 60%),
+    radial-gradient(50rem 40rem at 100% 8%, var(--glow-b), transparent 55%),
+    radial-gradient(50rem 50rem at 50% 120%, var(--glow-a), transparent 60%);
+}
+
+.bg-canvas::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at 50% 30%, #000 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 50% 30%, #000 0%, transparent 75%);
+}
+
+/* ---------------------------- Components ----------------------------------- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.text-gradient {
+  background-image: linear-gradient(120deg, var(--accent), var(--accent-soft), var(--accent));
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.8rem 1.6rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(120deg, var(--accent), var(--accent-soft));
+  color: var(--btn-ink);
+  border: 1px solid transparent;
+  box-shadow: 0 0 22px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 34px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.btn-secondary {
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  color: var(--text);
+  border: 1px solid var(--rule);
+  backdrop-filter: blur(8px);
+}
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.card {
+  position: relative;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--hairline);
+  background: linear-gradient(180deg, var(--card-a), var(--card-b));
+  box-shadow: var(--shadow-card);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: var(--shadow-lift);
+}
+
+/* Gradient hairline frame for hero/showcase media. */
+.frame {
+  position: relative;
+  border-radius: var(--radius-card);
+  padding: 1px;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 50%, transparent), var(--hairline) 40%, color-mix(in srgb, var(--accent-soft) 45%, transparent));
+  box-shadow: var(--shadow-lift);
+}
+.frame > * {
+  border-radius: calc(var(--radius-card) - 1px);
+  overflow: hidden;
+}
+
+/* Phone bezel for the app screenshots. */
+.device {
+  position: relative;
+  border-radius: 2.4rem;
+  padding: 0.55rem;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 32%, transparent), var(--hairline) 45%, color-mix(in srgb, var(--accent-soft) 30%, transparent));
+  box-shadow: var(--shadow-lift);
+}
+.device > .device-screen {
+  position: relative;
+  border-radius: 1.95rem;
+  overflow: hidden;
+  background: var(--surface);
+}
+.device img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.legal-copy h2 {
+  margin-bottom: 0.85rem;
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.legal-copy p,
+.legal-copy li {
+  color: var(--text-dim);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.legal-copy p + p {
+  margin-top: 0.9rem;
+}
+
+.legal-copy ul {
+  margin-top: 1rem;
+  list-style: disc;
+  padding-left: 1.35rem;
+}
+
+.legal-copy li + li {
+  margin-top: 0.45rem;
+}
+
+/* -------------------------- Ambient motion ------------------------------- */
+@keyframes vy-gradient-pan {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes vy-glow-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+  50% { transform: translate3d(0, -2.5%, 0) scale(1.06); opacity: 0.85; }
+}
+
+/* ----------------------------- Reveal -------------------------------------
+   Progressive enhancement: content is visible by default. Only once JS marks
+   the document `.reveal-ready` do we hide-then-animate, so a failed or slow
+   script never leaves the page blank. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-ready [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .reveal-ready [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .text-gradient {
+    animation: vy-gradient-pan 7s ease-in-out infinite;
+  }
+  .bg-canvas::before {
+    animation: vy-glow-drift 14s ease-in-out infinite;
+  }
+}

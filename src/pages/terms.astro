@@ -1,0 +1,82 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+
+const sections = [
+  {
+    title: 'Acceptance',
+    paragraphs: [
+      'These Terms of Service govern your use of the Vyom AR landing page, mobile app, and public API. By using Vyom AR, you agree to these terms.',
+      'Vyom AR is operated by CoderMana Technologies Private Limited.',
+    ],
+  },
+  {
+    title: 'What Vyom AR Provides',
+    paragraphs: [
+      'Vyom AR is an astronomy-first Panchang visualization platform. It computes and explains Panchang values such as tithi, nakshatra, yoga, karana, vara, muhurta windows, and related sky views from astronomical inputs.',
+      'The product is educational and informational. It is not a substitute for professional advice, local custom, personal judgment, or guidance from a qualified practitioner for decisions where that matters.',
+    ],
+  },
+  {
+    title: 'Astronomy And Cultural Content',
+    paragraphs: [
+      'Vyom AR aims to keep computed astronomy verifiable and to present Panchang concepts respectfully on their own terms. Computations can still contain bugs, approximations, device sensor limitations, service errors, or differences from other Panchang traditions and settings.',
+      'Where cultural, historical, or interpretive questions are contested, Vyom AR may present context without claiming a settled origin or single universal interpretation.',
+    ],
+  },
+  {
+    title: 'Your Responsibilities',
+    paragraphs: [
+      'You are responsible for how you use the app, API, and computed output. You must not misuse the service, interfere with its operation, attempt unauthorized access, or use it in a way that violates applicable law.',
+      'If you use API responses in another product, publication, or workflow, you are responsible for checking the result and presenting it accurately.',
+    ],
+  },
+  {
+    title: 'API Use',
+    paragraphs: [
+      'The public API is provided for verification, experimentation, and integration. Access may be changed, rate-limited, suspended, or discontinued to protect reliability, security, or operating cost.',
+      'Do not send abusive traffic, scrape in a way that degrades service, or represent API output as guaranteed error-free.',
+    ],
+  },
+  {
+    title: 'Intellectual Property',
+    paragraphs: [
+      'Vyom AR, its branding, app design, code, text, and original visual presentation are owned by CoderMana Technologies Private Limited or its licensors. Third-party datasets, fonts, platform components, and sky assets remain subject to their own licenses.',
+      'These terms do not grant you ownership of Vyom AR or permission to copy branding, redistribute proprietary app assets, or imply endorsement.',
+    ],
+  },
+  {
+    title: 'Availability And Changes',
+    paragraphs: [
+      'Vyom AR may change over time. Features may be added, removed, renamed, localized, made offline, made online, or temporarily unavailable.',
+      'The landing page and API may depend on third-party hosting, network availability, app stores, and device platform behavior.',
+    ],
+  },
+  {
+    title: 'Disclaimers',
+    paragraphs: [
+      'Vyom AR is provided as is and as available. To the maximum extent permitted by law, the operator disclaims warranties of accuracy, availability, fitness for a particular purpose, and non-infringement.',
+      'The operator is not liable for indirect, incidental, consequential, special, exemplary, or punitive damages arising from use of Vyom AR.',
+    ],
+  },
+  {
+    title: 'Changes To These Terms',
+    paragraphs: [
+      'These terms may be updated as the product evolves. Continued use after an update means you accept the updated terms.',
+    ],
+  },
+  {
+    title: 'Contact',
+    paragraphs: [
+      'For questions about these terms, contact CoderMana Technologies Private Limited through the support or business contact channel published for the company.',
+    ],
+  },
+];
+---
+
+<LegalPage
+  title="Terms of Service"
+  description="Terms governing use of the Vyom AR landing page, mobile app, and public API."
+  updated="July 6, 2026"
+  intro="These terms set the baseline for using Vyom AR as an educational Panchang, astronomy visualization, and public API product."
+  sections={sections}
+/>

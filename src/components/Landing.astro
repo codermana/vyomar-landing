@@ -1,0 +1,229 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import { getT, languages, DEFAULT_LANG, type Lang } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = DEFAULT_LANG } = Astro.props;
+const t = getT(lang);
+const dir = languages[lang]?.dir ?? 'ltr';
+
+const apiBaseUrl = (import.meta.env.PUBLIC_VYOMAR_API_URL || 'http://localhost:8084').replace(/\/+$/, '');
+const apiUrl = (path: string) => `${apiBaseUrl}${path}`;
+
+const sectionTitle = 'font-serif text-4xl font-bold tracking-tight text-ink sm:text-5xl';
+const sectionCopy = 'mt-4 text-lg leading-8 text-dim';
+
+const screens = [
+  { img: '/assets/screenshots/ios-today.png', ...t.screens.today },
+  { img: '/assets/screenshots/ios-sky.png', ...t.screens.sky },
+];
+---
+
+<Layout title={t.meta.title} description={t.meta.description} lang={lang} dir={dir}>
+  <Header lang={lang} />
+
+  <main>
+    <!-- Hero ------------------------------------------------------------- -->
+    <section class="relative px-4 pt-32 pb-16 sm:pt-36">
+      <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.15fr_1fr]">
+        <div>
+          <div data-reveal class="flex">
+            <span class="eyebrow"><i data-lucide="telescope" class="h-3.5 w-3.5"></i> {t.hero.eyebrow}</span>
+          </div>
+          <h1 data-reveal data-reveal-delay="80" class="mt-6 text-balance font-serif text-[2.5rem] font-bold leading-[1.08] tracking-tight text-ink sm:text-6xl">
+            {t.hero.h1Pre}<span class="text-gradient">{t.hero.h1Highlight}</span>{t.hero.h1Post}
+          </h1>
+          <p data-reveal data-reveal-delay="160" class="mt-6 max-w-xl text-lg leading-8 text-dim">
+            <Fragment set:html={t.hero.thesisHtml} />
+          </p>
+          <div data-reveal data-reveal-delay="240" class="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
+            <span class="btn btn-secondary w-full cursor-default sm:w-auto"><i data-lucide="sparkles" class="h-4 w-4"></i> {t.hero.comingSoon}</span>
+            <a class="btn btn-primary w-full sm:w-auto" href={apiUrl('/v1/panchang?lat=12.9716&lon=77.5946')}><i data-lucide="terminal" class="h-4 w-4"></i> {t.hero.tryApi}</a>
+          </div>
+        </div>
+
+        <div data-reveal data-reveal-delay="200" class="justify-self-center">
+          <div class="frame w-[min(20rem,80vw)]">
+            <div class="bg-surface p-5">
+              <canvas id="wheel" width="320" height="320" class="mx-auto block h-auto w-full max-w-[20rem]" aria-label="The celestial wheel: the arc from the Sun to the Moon is the tithi"></canvas>
+            </div>
+          </div>
+          <p class="mx-auto mt-4 max-w-[20rem] text-center text-[13px] leading-6 text-faint">
+            <Fragment set:html={t.hero.wheelCaptionHtml} />
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- App screenshots -------------------------------------------------- -->
+    <section id="screens" class="mx-auto max-w-6xl px-4 py-24 lg:py-28">
+      <div data-reveal class="mx-auto max-w-2xl text-center">
+        <span class="eyebrow">{t.screens.eyebrow}</span>
+        <h2 class={`mt-5 ${sectionTitle}`}>{t.screens.title}</h2>
+        <p class={sectionCopy}>{t.screens.copy}</p>
+      </div>
+
+      <div class="mt-16 grid items-start gap-12 sm:grid-cols-2 sm:gap-8 lg:gap-16">
+        {screens.map((s, i) => (
+          <figure data-reveal data-reveal-delay={i * 120} class="mx-auto flex max-w-xs flex-col items-center">
+            <div class="device">
+              <div class="device-screen">
+                <img src={s.img} alt={`Vyom AR ${s.k}`} width="390" height="844" loading="lazy" />
+              </div>
+            </div>
+            <figcaption class="mt-6 text-center">
+              <p class="font-serif text-xl font-semibold text-ink">{s.k}</p>
+              <p class="mt-1.5 text-sm leading-6 text-dim">{s.d}</p>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <!-- Features --------------------------------------------------------- -->
+    <section id="features" class="mx-auto max-w-6xl px-4 py-24 lg:py-28">
+      <div data-reveal class="mx-auto max-w-2xl text-center">
+        <span class="eyebrow">{t.features.eyebrow}</span>
+        <h2 class={`mt-5 ${sectionTitle}`}>{t.features.title}</h2>
+        <p class={sectionCopy}>{t.features.copy}</p>
+      </div>
+
+      <div class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+        {t.features.items.map((f, i) => (
+          <article data-reveal data-reveal-delay={i * 70} class={`card card-hover flex h-full flex-col p-7 ${i === 0 || i === 5 ? 'lg:col-span-2' : ''}`}>
+            <span class="flex h-11 w-11 items-center justify-center rounded-xl border border-accent/25 bg-accent/10 text-accent">
+              <i data-lucide={f.icon} class="h-5 w-5"></i>
+            </span>
+            <h3 class="mt-5 font-serif text-xl font-semibold text-ink">{f.title}</h3>
+            <p class="mt-2 text-sm leading-7 text-dim">{f.desc}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Open API --------------------------------------------------------- -->
+    <section id="api" class="mx-auto max-w-6xl px-4 pb-8">
+      <div data-reveal class="frame">
+        <div class="bg-surface grid items-center gap-8 p-8 sm:p-12 lg:grid-cols-[1.2fr_1fr]">
+          <div>
+            <span class="eyebrow"><i data-lucide="activity" class="h-3.5 w-3.5"></i> {t.api.eyebrow}</span>
+            <h2 class="mt-5 font-serif text-3xl font-bold tracking-tight text-ink sm:text-4xl">{t.api.title}</h2>
+            <p class="mt-4 text-base leading-7 text-dim">{t.api.copy}</p>
+            <div class="mt-7 flex flex-wrap gap-3">
+              <a class="btn btn-primary" href={apiUrl('/v1/panchang?lat=12.9716&lon=77.5946')}><i data-lucide="terminal" class="h-4 w-4"></i> {t.api.call}</a>
+              <a class="btn btn-secondary" href={apiUrl('/health')}>{t.api.status}</a>
+            </div>
+          </div>
+          <pre class="overflow-x-auto rounded-2xl border p-5 text-[12.5px] leading-6 text-dim" style="border-color: var(--rule); background: color-mix(in srgb, var(--text) 4%, transparent)"><code>GET /v1/panchang
+  ?lat=12.9716
+  &amp;lon=77.5946
+
+→ tithi, nakshatra, yoga,
+  karana, vara</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer lang={lang} />
+</Layout>
+
+<script>
+  // The celestial wheel (sidereal registration: the nakshatra ring anchors at
+  // sidereal 0, the tithi ring at the Sun). Longitudes are approximated
+  // client-side for the hero only; the app and API compute them properly.
+  function approxLongitudes(now: Date) {
+    // Low-precision mean elements, good to ~1 deg: fine for a hero graphic.
+    const d = (now.getTime() / 86400000) + 2440587.5 - 2451545.0;
+    const sunTrop = (280.460 + 0.9856474 * d) % 360;
+    const g = ((357.528 + 0.9856003 * d) % 360) * Math.PI / 180;
+    const sun = (sunTrop + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g) + 360) % 360;
+    const moonMean = (218.316 + 13.176396 * d) % 360;
+    const m = ((134.963 + 13.064993 * d) % 360) * Math.PI / 180;
+    const moon = (moonMean + 6.289 * Math.sin(m) + 360) % 360;
+    const ayan = 24.22; // Lahiri, approximate
+    return { sun: (sun - ayan + 360) % 360, moon: (moon - ayan + 360) % 360 };
+  }
+
+  function css(name: string) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  function draw() {
+    const c = document.getElementById('wheel') as HTMLCanvasElement | null;
+    if (!c) return;
+    const ctx = c.getContext('2d')!;
+    const dpr = window.devicePixelRatio || 1;
+    const W = 320, H = 320;
+    c.width = W * dpr; c.height = H * dpr;
+    c.style.width = ''; c.style.height = '';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+
+    const { sun: sunLon, moon: moonLon } = approxLongitudes(new Date());
+    const cx = W / 2, cy = H / 2, R = W / 2 - 6;
+    const toRad = (deg: number) => (deg - 90) * Math.PI / 180;
+    const dark = document.documentElement.classList.contains('dark');
+
+    const gd = ctx.createRadialGradient(cx, cy, 10, cx, cy, R);
+    gd.addColorStop(0, css('--disk0')); gd.addColorStop(1, css('--disk1'));
+    ctx.fillStyle = gd; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill();
+
+    if (dark) {
+      for (let i = 0; i < 36; i++) {
+        const a = i * 137.5 * Math.PI / 180, rr = (i % 7) / 7 * R * 0.9;
+        ctx.globalAlpha = 0.12 + ((i * 53) % 50) / 130;
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, ((i * 29) % 10 > 8 ? 1.3 : 0.7), 0, 7);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    const rOut = R, rNak = R * 0.80;
+    const curNak = Math.floor((moonLon % 360) / (360 / 27));
+    const nakRGB = css('--nak');
+    for (let i = 0; i < 27; i++) {
+      const a0 = toRad(i * 360 / 27), a1 = toRad((i + 1) * 360 / 27);
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, rOut, a0, a1); ctx.closePath();
+      ctx.fillStyle = i === curNak ? `rgba(${nakRGB},.45)` : (i % 2 ? `rgba(${nakRGB},.16)` : `rgba(${nakRGB},.06)`);
+      ctx.fill();
+    }
+    ctx.beginPath(); ctx.arc(cx, cy, rNak, 0, 7); ctx.fillStyle = css('--bg'); ctx.fill();
+
+    const rTit = R * 0.62;
+    const curTit = Math.floor((((moonLon - sunLon) % 360 + 360) % 360) / 12);
+    const titRGB = css('--tit');
+    // Anchored at the Sun: tithi i spans elongation [12i, 12i+12).
+    for (let i = 0; i < 30; i++) {
+      const a0 = toRad(sunLon + i * 12), a1 = toRad(sunLon + (i + 1) * 12);
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, rNak, a0, a1); ctx.closePath();
+      ctx.fillStyle = i === curTit ? `rgba(${titRGB},.5)` : (i % 2 ? `rgba(${titRGB},.18)` : `rgba(${titRGB},.07)`);
+      ctx.fill();
+    }
+    ctx.beginPath(); ctx.arc(cx, cy, rTit, 0, 7); ctx.fillStyle = css('--bg'); ctx.fill();
+
+    ctx.strokeStyle = css('--rule'); ctx.lineWidth = 1;
+    for (const r of [rOut, rNak, rTit]) { ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.stroke(); }
+
+    const rEcl = (rNak + rTit) / 2;
+    ctx.setLineDash([2, 4]); ctx.beginPath(); ctx.arc(cx, cy, rEcl, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+
+    ctx.strokeStyle = css('--accent'); ctx.lineWidth = 4; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(cx, cy, rEcl, toRad(sunLon), toRad(moonLon)); ctx.stroke();
+
+    const body = (lon: number, color: string, rad: number) => {
+      const x = cx + Math.cos(toRad(lon)) * rEcl, y = cy + Math.sin(toRad(lon)) * rEcl;
+      ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, rad, 0, 7); ctx.fill();
+    };
+    body(sunLon, css('--sun'), 7);
+    body(moonLon, css('--moon'), 6);
+  }
+
+  draw();
+  // Redraw when the theme toggle flips (Layout dispatches this on apply).
+  window.addEventListener('themechange', draw);
+</script>

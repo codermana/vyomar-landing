@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+
+interface Section {
+  title: string;
+  paragraphs: string[];
+  items?: string[];
+}
+
+interface Props {
+  title: string;
+  description: string;
+  updated: string;
+  intro: string;
+  sections: Section[];
+}
+
+const { title, description, updated, intro, sections } = Astro.props;
+---
+
+<Layout title={`${title} | Vyom AR`} description={description} lang="en" dir="ltr">
+  <Header lang="en" />
+
+  <main class="px-4 pt-32">
+    <article class="mx-auto max-w-3xl">
+      <div data-reveal class="flex">
+        <span class="eyebrow"><i data-lucide="scroll-text" class="h-3.5 w-3.5"></i> Legal</span>
+      </div>
+
+      <header data-reveal data-reveal-delay="80" class="mt-6 border-b pb-8" style="border-color: var(--rule)">
+        <h1 class="font-serif text-4xl font-bold tracking-tight text-ink sm:text-5xl">{title}</h1>
+        <p class="mt-4 text-sm font-medium text-faint">Last updated: {updated}</p>
+        <p class="mt-6 text-lg leading-8 text-dim">{intro}</p>
+      </header>
+
+      <div class="legal-copy mt-10 space-y-10">
+        {sections.map((section) => (
+          <section data-reveal>
+            <h2>{section.title}</h2>
+            {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+            {section.items && (
+              <ul>
+                {section.items.map((item) => <li>{item}</li>)}
+              </ul>
+            )}
+          </section>
+        ))}
+      </div>
+    </article>
+  </main>
+
+  <Footer lang="en" />
+</Layout>
