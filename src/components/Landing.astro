@@ -2,22 +2,22 @@
 import Layout from '../layouts/Layout.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
-import { getT, languages, DEFAULT_LANG, type Lang } from '../i18n/ui';
+import { appPath, getT, languages, publicApiBaseUrl, DEFAULT_LANG, type Lang } from '../i18n/ui';
 
 interface Props { lang?: Lang }
 const { lang = DEFAULT_LANG } = Astro.props;
 const t = getT(lang);
 const dir = languages[lang]?.dir ?? 'ltr';
 
-const apiBaseUrl = (import.meta.env.PUBLIC_VYOMAR_API_URL || 'http://localhost:8084').replace(/\/+$/, '');
+const apiBaseUrl = publicApiBaseUrl();
 const apiUrl = (path: string) => `${apiBaseUrl}${path}`;
 
 const sectionTitle = 'font-serif text-4xl font-bold tracking-tight text-ink sm:text-5xl';
 const sectionCopy = 'mt-4 text-lg leading-8 text-dim';
 
 const screens = [
-  { img: '/assets/screenshots/ios-today.png', ...t.screens.today },
-  { img: '/assets/screenshots/ios-sky.png', ...t.screens.sky },
+  { img: appPath('/assets/screenshots/ios-today.png'), ...t.screens.today },
+  { img: appPath('/assets/screenshots/ios-sky.png'), ...t.screens.sky },
 ];
 ---
 
@@ -40,7 +40,9 @@ const screens = [
           </p>
           <div data-reveal data-reveal-delay="240" class="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
             <span class="btn btn-secondary w-full cursor-default sm:w-auto"><i data-lucide="sparkles" class="h-4 w-4"></i> {t.hero.comingSoon}</span>
-            <a class="btn btn-primary w-full sm:w-auto" href={apiUrl('/v1/panchang?lat=12.9716&lon=77.5946')}><i data-lucide="terminal" class="h-4 w-4"></i> {t.hero.tryApi}</a>
+            {apiBaseUrl && (
+              <a class="btn btn-primary w-full sm:w-auto" href={apiUrl('/v1/panchang?lat=12.9716&lon=77.5946')}><i data-lucide="terminal" class="h-4 w-4"></i> {t.hero.tryApi}</a>
+            )}
           </div>
         </div>
 
@@ -112,8 +114,14 @@ const screens = [
             <h2 class="mt-5 font-serif text-3xl font-bold tracking-tight text-ink sm:text-4xl">{t.api.title}</h2>
             <p class="mt-4 text-base leading-7 text-dim">{t.api.copy}</p>
             <div class="mt-7 flex flex-wrap gap-3">
-              <a class="btn btn-primary" href={apiUrl('/v1/panchang?lat=12.9716&lon=77.5946')}><i data-lucide="terminal" class="h-4 w-4"></i> {t.api.call}</a>
-              <a class="btn btn-secondary" href={apiUrl('/health')}>{t.api.status}</a>
+              {apiBaseUrl ? (
+                <>
+                  <a class="btn btn-primary" href={apiUrl('/v1/panchang?lat=12.9716&lon=77.5946')}><i data-lucide="terminal" class="h-4 w-4"></i> {t.api.call}</a>
+                  <a class="btn btn-secondary" href={apiUrl('/health')}>{t.api.status}</a>
+                </>
+              ) : (
+                <span class="btn btn-secondary cursor-default"><i data-lucide="sparkles" class="h-4 w-4"></i> {t.hero.comingSoon}</span>
+              )}
             </div>
           </div>
           <pre class="overflow-x-auto rounded-2xl border p-5 text-[12.5px] leading-6 text-dim" style="border-color: var(--rule); background: color-mix(in srgb, var(--text) 4%, transparent)"><code>GET /v1/panchang

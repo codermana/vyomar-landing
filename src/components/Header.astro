@@ -1,13 +1,13 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
 import LangSwitcher from './LangSwitcher.astro';
-import { getT, localizedPath, DEFAULT_LANG, type Lang } from '../i18n/ui';
+import { appPath, getT, localizedPath, publicApiBaseUrl, DEFAULT_LANG, type Lang } from '../i18n/ui';
 
 interface Props { lang?: Lang }
 const { lang = DEFAULT_LANG } = Astro.props;
 const t = getT(lang);
 const base = localizedPath(lang);
-const apiBaseUrl = (import.meta.env.PUBLIC_VYOMAR_API_URL || 'http://localhost:8084').replace(/\/+$/, '');
+const apiBaseUrl = publicApiBaseUrl();
 const brandChannel = import.meta.env.PUBLIC_BRAND_CHANNEL;
 ---
 <header
@@ -16,7 +16,7 @@ const brandChannel = import.meta.env.PUBLIC_BRAND_CHANNEL;
 >
   <div class="mx-auto flex h-18 max-w-6xl items-center justify-between gap-3 px-4 sm:px-8">
     <a href={base} class="group flex min-w-0 items-center gap-2.5 no-underline">
-      <img src="/logo.svg" alt="" width="36" height="36" class="h-9 w-9 shrink-0 transition group-hover:scale-105" />
+      <img src={appPath('/logo.svg')} alt="" width="36" height="36" class="h-9 w-9 shrink-0 transition group-hover:scale-105" />
       <span class="font-serif text-lg font-bold tracking-tight text-ink">Vyom <span class="text-accent not-italic">AR</span></span>
       {brandChannel && (
         <span class="rounded-full border border-accent/40 bg-accent/10 px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.08em] text-accent">{brandChannel}</span>
@@ -29,7 +29,9 @@ const brandChannel = import.meta.env.PUBLIC_BRAND_CHANNEL;
       <a href={`${base}#api`} class="hidden rounded-full px-3 py-2 text-sm font-medium text-dim no-underline transition hover:text-ink md:inline-flex">{t.nav.api}</a>
       <LangSwitcher lang={lang} />
       <ThemeToggle />
-      <a href={`${apiBaseUrl}/v1/panchang?lat=12.9716&lon=77.5946`} class="btn btn-primary px-4 py-2 text-sm">{t.nav.tryApi}</a>
+      {apiBaseUrl && (
+        <a href={`${apiBaseUrl}/v1/panchang?lat=12.9716&lon=77.5946`} class="btn btn-primary px-4 py-2 text-sm">{t.nav.tryApi}</a>
+      )}
     </nav>
   </div>
 </header>

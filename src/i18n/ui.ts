@@ -42,10 +42,26 @@ export const liveLangs = (Object.keys(languages) as Lang[]).filter((l) => langua
 /** Live locales that need a generated `/<code>/` route (everything but the default). */
 export const localizedLangs = liveLangs.filter((l) => l !== DEFAULT_LANG);
 
+/** Build an app-local URL that works when deployed under a GitHub Pages base path. */
+export function appPath(path = '/'): string {
+  const rawBase = import.meta.env.BASE_URL || '/';
+  const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+  const clean = path.startsWith('/') ? path.slice(1) : path;
+  return `${base}${clean}`;
+}
+
 /** Build an href to `path` for `lang` (default locale is unprefixed). */
 export function localizedPath(lang: Lang, path = '/'): string {
   const clean = path.startsWith('/') ? path : `/${path}`;
-  return lang === DEFAULT_LANG ? clean : `/${lang}${clean === '/' ? '' : clean}` + (clean === '/' ? '/' : '');
+  const localized = lang === DEFAULT_LANG ? clean : `/${lang}${clean === '/' ? '/' : clean}`;
+  return appPath(localized);
+}
+
+/** Use a localhost API only in dev; production must opt in with PUBLIC_VYOMAR_API_URL. */
+export function publicApiBaseUrl(): string {
+  const configured = import.meta.env.PUBLIC_VYOMAR_API_URL?.trim();
+  if (configured) return configured.replace(/\/+$/, '');
+  return import.meta.env.DEV ? 'http://localhost:8084' : '';
 }
 
 export interface Feature {

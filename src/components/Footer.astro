@@ -1,17 +1,17 @@
 ---
-import { getT, localizedPath, DEFAULT_LANG, type Lang } from '../i18n/ui';
+import { appPath, getT, localizedPath, publicApiBaseUrl, DEFAULT_LANG, type Lang } from '../i18n/ui';
 
 interface Props { lang?: Lang }
 const { lang = DEFAULT_LANG } = Astro.props;
 const t = getT(lang);
 const base = localizedPath(lang);
-const apiBaseUrl = (import.meta.env.PUBLIC_VYOMAR_API_URL || 'http://localhost:8084').replace(/\/+$/, '');
+const apiBaseUrl = publicApiBaseUrl();
 ---
 <footer class="relative mt-24 border-t px-4 py-16" style="border-color: var(--rule)">
   <div class="mx-auto grid max-w-6xl gap-10 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
     <div>
       <a href={base} class="flex items-center gap-2.5 no-underline">
-        <img src="/logo.svg" alt="" width="36" height="36" class="h-9 w-9" />
+        <img src={appPath('/logo.svg')} alt="" width="36" height="36" class="h-9 w-9" />
         <span class="font-serif text-lg font-bold tracking-tight text-ink">Vyom <span class="text-accent">AR</span></span>
       </a>
       <p class="mt-4 max-w-sm text-sm leading-7 text-dim">{t.footer.tagline}</p>
@@ -29,16 +29,22 @@ const apiBaseUrl = (import.meta.env.PUBLIC_VYOMAR_API_URL || 'http://localhost:8
     <div>
       <p class="text-xs font-semibold uppercase tracking-[0.16em] text-faint">{t.footer.developers}</p>
       <ul class="mt-4 space-y-3 text-sm">
-        <li><a href={`${apiBaseUrl}/v1/panchang?lat=12.9716&lon=77.5946`} class="text-dim no-underline transition hover:text-accent">{t.footer.panchangEndpoint}</a></li>
-        <li><a href={`${apiBaseUrl}/health`} class="text-dim no-underline transition hover:text-accent">{t.footer.apiStatus}</a></li>
+        {apiBaseUrl ? (
+          <>
+            <li><a href={`${apiBaseUrl}/v1/panchang?lat=12.9716&lon=77.5946`} class="text-dim no-underline transition hover:text-accent">{t.footer.panchangEndpoint}</a></li>
+            <li><a href={`${apiBaseUrl}/health`} class="text-dim no-underline transition hover:text-accent">{t.footer.apiStatus}</a></li>
+          </>
+        ) : (
+          <li><span class="text-faint">{t.hero.comingSoon}</span></li>
+        )}
       </ul>
     </div>
 
     <div>
       <p class="text-xs font-semibold uppercase tracking-[0.16em] text-faint">{t.footer.legal}</p>
       <ul class="mt-4 space-y-3 text-sm">
-        <li><a href="/privacy/" class="text-dim no-underline transition hover:text-accent">{t.footer.privacy}</a></li>
-        <li><a href="/terms/" class="text-dim no-underline transition hover:text-accent">{t.footer.terms}</a></li>
+        <li><a href={appPath('/privacy/')} class="text-dim no-underline transition hover:text-accent">{t.footer.privacy}</a></li>
+        <li><a href={appPath('/terms/')} class="text-dim no-underline transition hover:text-accent">{t.footer.terms}</a></li>
       </ul>
     </div>
   </div>

@@ -27,6 +27,7 @@ concurrency:
 env:
   BUILD_PATH: "." # default value when not using subfolders
   # BUILD_PATH: subfolder
+  PUBLIC_VYOMAR_API_URL: ${{ vars.PUBLIC_VYOMAR_API_URL }}
 
 jobs:
   build:
